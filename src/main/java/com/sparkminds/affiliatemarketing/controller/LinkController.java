@@ -33,7 +33,7 @@ public class LinkController {
   @Autowired
   UserService userService;
 
-  @PostMapping()
+  @PostMapping(produces = "application/json")
   public ResponseEntity<?> createLink(@Valid @RequestBody CreateLinkDto createLinkDto,
       Authentication authentication) {
     Link link = linkService.createNewLink(createLinkDto.getProductName(),

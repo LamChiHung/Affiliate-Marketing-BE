@@ -25,7 +25,7 @@ public class AuthController {
   @Autowired
   private AuthenticationManager authenticationManager;
 
-  @PostMapping("/register")
+  @PostMapping(value = "/register", produces = "application/json")
   public ResponseEntity<?> addNewUser(@Valid @RequestBody RegisterDto user) {
     if (authService.checkValidRegisterAccount(user)) {
       authService.saveUser(user);

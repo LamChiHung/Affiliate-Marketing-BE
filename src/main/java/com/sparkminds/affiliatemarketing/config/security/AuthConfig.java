@@ -3,8 +3,10 @@ package com.sparkminds.affiliatemarketing.config.security;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,12 +23,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@Import(SecurityProblemSupport.class)
 public class AuthConfig {
 
+  @Autowired
+  private SecurityProblemSupport problemSupport;
 
   private static final String[] WHITE_LIST_URL = {"/api/auth/**", "/api/links/*/*"};
 
@@ -58,7 +64,9 @@ public class AuthConfig {
         .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL).permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
+        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+        .exceptionHandling(exp -> exp.authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport));
     return http.build();
   }
 

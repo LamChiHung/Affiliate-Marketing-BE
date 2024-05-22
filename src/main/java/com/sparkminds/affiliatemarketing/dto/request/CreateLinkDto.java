@@ -12,8 +12,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class CreateLinkDto {
 
-  @Length(min = 2, max = 100)
-  @NotBlank
-  @Pattern(regexp = "^[a-zA-z0-9 ]+$")
+  @Length(min = 2, max = 100, message = "The length of product name must be in 2 - 100 characters")
+  @NotBlank(message = "product name can't blank")
+  @Pattern(regexp = "^[a-zA-z0-9 ]+$", message = "product name can't contain special characters")
   private String productName;
 }

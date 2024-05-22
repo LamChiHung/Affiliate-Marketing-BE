@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,8 +87,7 @@ public class LinkServiceImp implements LinkService {
   public Page<Link> getLinkOfPage(Integer page, String username) {
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new NullPointerException("User not found"));
-    Pageable pageable = PageRequest.of(page, Constance.linkPageSize,
-        Sort.by("createdDate").descending());
+    Pageable pageable = PageRequest.of(page, Constance.linkPageSize);
     return linkRepository.findAllByIsDeletedAndUserId(false, user.getId(), pageable);
   }
 
